@@ -266,6 +266,27 @@ def train(args: TrainArgs):
                 assert args.model is not None
                 model = ByteLatentTransformer(args.model)
                 model_args = args.model
+
+        logger.info(f"Model: {model}")
+        logger.info(f"Params: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
+        if isinstance(model, ByteLatentTransformer):
+            enc_params = sum(p.numel() for p in model.local_encoder.parameters() if p.requires_grad)
+            global_params = sum(p.numel() for p in model.global_transformer.parameters() if p.requires_grad)
+            dec_params = sum(p.numel() for p in model.local_decoder.parameters() if p.requires_grad)
+            hash_tok_emb_params = 0
+            if model_args.encoder_enable_byte_group_hash:
+                hash_tok_emb_params = sum(p.numel() for p in model.hash_tok_emb.parameters() if p.requires_grad)
+            byte_ngram_params = 0
+            if model_args.encoder_enable_byte_ngrams:
+                byte_ngram_params = sum(p.numel() for p in model.encoder_ngram_embedding.parameters() if p.requires_grad)
+            logger.info(f"Encoder: \t{enc_params}")
+            logger.info(f"Global: \t{global_params}")
+            logger.info(f"Decoder: \t{dec_params}")
+            logger.info(f"Hash Tok Emb: \t{hash_tok_emb_params}")
+            logger.info(f"Byte Ngrams: \t{byte_ngram_params}")
+            logger.info(f"Total: \t{enc_params + global_params + dec_params + hash_tok_emb_params + byte_ngram_params}")
+
+
         logger.info("Model is built !")
 
         model_param_count = get_num_params(model)

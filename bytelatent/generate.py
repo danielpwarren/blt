@@ -271,9 +271,9 @@ class PackedCausalTransformerGenerator:
         self.setup_prefilling(lengths=lengths)
         prefill_out = self.model.forward(
             tokens,
-            tok_idx=self.prefill_tok_id,
-            mask=self.prefill_mask,
-            attn_impl="flex_attention",
+            # tok_idx=self.prefill_tok_id,
+            #mask=self.prefill_mask,
+            #attn_impl="flex_attention",
         )
         self.setup_generation(lengths=lengths)
         return prefill_out

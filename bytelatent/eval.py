@@ -155,6 +155,13 @@ def eval_ppl_on_path(
     max_n_docs: int | None,
     s3_profile: str | None = None,
 ):
+    torch._dynamo.config.suppress_errors = True
+    if hasattr(torch, 'compile'):
+        # For PyTorch 2.0+
+        model = model.to('cuda').eval()
+    else:
+        model = model.cuda().eval()
+
     model.eval()
     seq_len = model.get_output_seq_len()
     arrow_iterator = ArrowFileIterator(

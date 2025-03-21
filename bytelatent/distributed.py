@@ -49,10 +49,10 @@ default_no_recompute_ops = {
     torch.ops.xformers_flash.flash_fwd.default,
 }
 
-if int(os.environ.get("BLT_ALLOW_MISSING_FLEX_ATTENTION", False)) == 0:
-    default_no_recompute_ops.add(
-        torch.ops.xformers.efficient_attention_forward_cutlass.default
-    )
+# if int(os.environ.get("BLT_ALLOW_MISSING_FLEX_ATTENTION", False)) == 0:
+#     default_no_recompute_ops.add(
+#         torch.ops.xformers.efficient_attention_forward_cutlass.default
+#     )
 
 
 class DistributedArgs(BaseModel):
@@ -128,6 +128,8 @@ class EnvironmentArgs(BaseModel):
     NCCL_IB_TIMEOUT: str = "22"
     NCCL_DEBUG: str = "INFO"
     TORCH_NCCL_ASYNC_ERROR_HANDLING: str = "1"
+    # Added ENV for NCCL socket interface name
+    NCCL_SOCKET_IFNAME: str ="lo"
 
 
 def get_device_mesh(distributed_args: DistributedArgs):

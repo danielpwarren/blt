@@ -170,3 +170,7 @@ jobs_parallel-copy/
 wandb/
 *.ipynb
 
+ckpt
+data
+tokenizers
+entropy_model
